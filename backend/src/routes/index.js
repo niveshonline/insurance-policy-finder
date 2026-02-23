@@ -87,6 +87,20 @@ router.post("/insurance-form", verifyJWT, async (req, res) => {
 	}
 });
 
+// Fetch Insurance Form Data
+router.get("/insurance-form", verifyJWT, async (req, res) => {
+	try {
+		const { contactNumber } = req.contactNumber;
+		const form = await InsuranceForm.findOne({ contactNumber });
+		if (!form) {
+			return res.status(404).json({ success: false, message: "No form found" });
+		}
+		res.json({ success: true });
+	} catch (err) {
+		res.status(500).json({ success: false, error: "Server error" });
+	}
+});
+
 // Generate JWT Token for leadless clean form submission
 router.post("/generate-jwt", async (req, res) => {
 	try {
@@ -106,20 +120,6 @@ router.post("/generate-jwt", async (req, res) => {
 	}
 })
 
-// Fetch Insurance Form Data
-router.get("/insurance-form", verifyJWT, async (req, res) => {
-	try {
-		const { contactNumber } = req.contactNumber;
-		const form = await InsuranceForm.findOne({ contactNumber });
-		if (!form) {
-			return res.status(404).json({ success: false, message: "No form found" });
-		}
-		res.json({ success: true });
-	} catch (err) {
-		res.status(500).json({ success: false, error: "Server error" });
-	}
-});
-
 // Thank You Confirmation after review page is loaded
 router.post("/thank-you", verifyJWT, async (req, res) => {
 	try {
@@ -128,7 +128,7 @@ router.post("/thank-you", verifyJWT, async (req, res) => {
 		const insurerName = req.body.selfName;
 
 		const payload = {
-			template_name: "health_insurance04",
+			template_name: "health_insurance004",
 			broadcast_name: broadcastChannelName,
 			receivers: [
 				{
